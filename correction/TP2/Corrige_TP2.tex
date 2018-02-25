@@ -1,0 +1,430 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP2}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\section{{\tt installeTP.sh}}
+
+Normalement, à l'issue du premier TP, vous devez avoir dans votre
+répertoire personnel ({\tt \~/INF203/TP1/scripts}) le script {\tt installeTP.sh}.
+Vous pouvez le copier directement dans votre dossier personnel ({\tt \~/installeTP.sh})
+car il vous servira désormais à chaque début de TP à récupérer les
+fichiers dont vous aurez besoin. Ainsi, au début du TP2, vous pouvez
+taper la commande suivante :
+
+\begin{verbatim}
+    ./installeTP.sh 2
+\end{verbatim}
+
+Où le {\tt 2} désigne le TP2. Cela remplace avantageusement la
+commande que vous aviez dû taper la semaine dernière pour récupérer
+les fichiers du TP1, à savoir :
+
+\begin{verbatim}
+    cp -R /Public/203_INF_Public/TP1 INF203          # Ne plus jamais faire ça !
+\end{verbatim}
+
+\section{Compilation}
+
+Pour commencer le TP2, vous devez être au clair avec la
+\textbf{compilation}. La compilation, c'est l'étape où votre programme
+qui se trouve dans un fichier {\tt .c} (comme par exemple {\tt deborde\_char.c})
+va être traduit en instructions compréhensibles par l'ordinateur.
+
+\vspace*{0.2cm}
+
+Avant :
+
+\lstinputlisting{listing/ex.c}
+
+Après :
+
+\begin{lstlisting}
+7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00
+03 00 3e 00 01 00 00 00  80 05 00 00 00 00 00 00
+40 00 00 00 00 00 00 00  38 22 00 00 00 00 00 00
+00 00 00 00 40 00 38 00  09 00 40 00 24 00 23 00
+06 00 00 00 05 00 00 00  40 00 00 00 00 00 00 00
+\end{lstlisting}
+
+Pour cela, on utilise la commande {\tt clang} (Pour les anciens, il
+s'agit d'un équivalent à la commande {\tt gcc}). Pour compiler le
+fichier {\tt monprog.c}, par exemple, on exécutera donc la commande :
+
+\begin{verbatim}
+    clang monprog.c
+\end{verbatim}
+
+Cela créera un exécutable nommé {\tt a.out}. On peut aussi entrer la
+commande suivante :
+
+\begin{verbatim}
+    clang monprog.c -o mon_executable
+\end{verbatim}
+
+Cela compilera de la même manière, mais en nommant l'exécutable
+produit : {\tt mon\_executable}. On pourra ensuite lancer notre
+programme en entrant la commande :
+
+\begin{verbatim}
+    ./mon_executable
+\end{verbatim}
+
+On peut maintenant commener à répondre aux questions ! Ouf !
+
+\section{Testons des entiers}
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item Pour ne pas retaper à chaque fois les mêmes commandes, on peut
+  utiliser les flèches du haut et du bas pour remonter dans
+  l'historique des commandes.
+
+  On peut aussi utiliser la touche TAB pour compéter dès que possible
+  les noms de fichiers ainsi que les commandes que l'on est en train
+  de taper.
+
+\item On pars du programme {\tt exemple\_generation.c} que l'on a un
+  peu modifié pour qu'il affiche ``Trop grand'', ``Trop petit'' ou
+  ``Youpie !'' :
+
+  \lstinputlisting{listing/exemple_generation_1.c}
+
+  Une fois compilé, si on lance le programme plusieurs fois, on voit
+  que l'on tombe souvent sur ``Trop grand'' et ``Trop petit'', mais
+  rarement sur ``Youpie !''. On souhaite donc que le programme fasse
+  lui même un certain nombre de générations. On utilise pour cela une
+  boucle.
+
+  \lstinputlisting{listing/exemple_generation_2.c}
+
+  \textbf{NB:} La boucle {\tt for} part de {\tt i = 0} et s'arrête
+  quand {\tt i} n'est plus {\tt < nombre\_boucle}.
+
+  Donc {\tt i} va de {\tt 0} à {\tt nombre\_boucle - 1}.
+
+\end{enumerate}
+
+\newpage
+
+\section{Provoquons un débordement}
+
+\begin{enumerate}[label=\textbf{[\alph*]},resume]
+  \setlength\itemsep{1em}
+
+\item \textbf{[d] [e]} Pour les trois précédentes questions, voilà le tableau résumé :
+
+  \begin{center}
+    \begin{tabular}{|l|l|l|l|l|}
+      \hline
+      Type & Taille (octet) & Taille (bit) & Valeur Max & Temps débordement \\
+      \hline
+      \textbf{unsigned char}  & 1 & 8  & 0 .. 255        & < 0.005 s \\
+      \textbf{unsigned short} & 2 & 16 & 0 .. 65335      & < 0.005 s \\
+      \textbf{unsigned int}   & 4 & 32 & 0 .. 4294967295 & env. 10 s  \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\setcounter{enumi}{5}
+\item Comme l'ordinateur compte à la même vitesse quelque soit le type
+  de la variable, on s'attend à ce que {\tt deborde\_int} prenne
+  $\frac{{\tt taille(int)}}{{\tt taille(short)}}$ fois plus de temps que {\tt
+  deborde\_short}, soit 65536 fois plus de temps. Cela dit, un temps
+  d'exécution inférieur à 0.005 secondes n'est pas significatif. On ne
+  peut donc pas vraiment déduire quoi que ce soit des mesures
+  précédentes ...
+
+\end{enumerate}
+
+\section{Rangeons !}
+
+\begin{enumerate}[label=\textbf{[\alph*]},resume]
+  \setlength\itemsep{1em}
+
+\item Appel effectif à la fonction {\tt inserer} :
+
+\begin{verbatim}
+    inserer(T, i, valeur);
+\end{verbatim}
+
+\item Listing complet de {\tt exemple\_generation\_tableau.c} :
+
+  \lstinputlisting{listing/exemple_generation_tableau.c}
+
+\end{enumerate}
+
+\newpage
+
+\section{Une (petite) commande de la semaine : {\tt wc}}
+
+\begin{enumerate}[label=\textbf{[\alph*]},resume]
+  \setlength\itemsep{1em}
+
+\item La commande {\tt wc} pour \textit{word count}, permet de compter
+  les lignes d'un fichier avec l'option \textbf{{\tt -l}}. Exemple :
+
+\begin{verbatim}
+    wc -l fichier.c
+\end{verbatim}
+
+On note que {\tt wc} ne fait que compter le nombre d'occurence du
+caractère de retour à la ligne ``{\tt \textbackslash n}''. Donc si la dernière ligne
+n'est pas suivie d'un retour à la ligne, elle n'est pas comptée.
+
+\item Pour compter toutes les lignes de code C que l'on a produites,
+  on peut utiliser la commande suivante :
+
+\begin{verbatim}
+    wc -l *.c
+\end{verbatim}
+
+\end{enumerate}
+
+\section{Installons le TP}
+
+Revenons sur les droits d'accès. On sait qu'il peut y avoir
+plusieurs utilisateurs sur un système UNIX comme Turing. En
+l'occurence, chaque étudiant a un compte. Il peut y avoir également
+plusieurs groupes. Chaque utilisateur peut appartenir ou non à chacun
+des groupes. On peut lister les groupes auxquels on appartient en
+tapant la commande :
+
+\begin{verbatim}
+    $ groups
+    corentin cdrom floppy sudo audio dip video plugdev netdev
+    bluetooth lpadmin scanner
+\end{verbatim}
+
+Dans cet exemple, on voit que sur mon ordinateur personnel,
+j'appartiens entre autres au groupe {\tt cdrom}, ce qui me permet
+d'accéder au lecteur de CD, mais aussi au groupe {\tt audio}, ce qui
+me permet d'écouter de la musique et d'enregistrer des sons.
+
+Sous UNIX, chaque fichier appartient à UN utilisateur et à UN
+groupe. Par exemple pour le fichier suivant :
+
+\begin{verbatim}
+    $ ls -l logo.jpg
+    -rw-r--r-- 1 corentin users 275085 avril 19  2017 logo.jpg
+\end{verbatim}
+
+On voit que le fichier appartient à l'utilisateur {\tt corentin} et au
+groupe {\tt users}. On voit également que les droits sont définis de
+la manière suivante :
+
+\begin{verbatim}
+    rw-r--r--
+\end{verbatim}
+
+Soit :
+
+\begin{center}
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{3}{|c|}{u} & \multicolumn{3}{c|}{g} & \multicolumn{3}{c|}{o} \\
+    \hline
+    r & w & x & r & w & x & r & w & x \\
+    \hline
+    {\tt X} & {\tt X} &  & {\tt X} &  &  & {\tt X} &  &  \\
+    \hline
+  \end{tabular}
+\end{center}
+
+Donc, l'utilisateur {\tt corentin} peut lire et modifier le fichier et
+les membres du groupe {\tt users} et le reste des utilisateurs du
+système (donc tous ceux qui ne sont pas dans le groupe {\tt users}) ne
+peuvent que le lire.
+
+
+\begin{enumerate}[label=\textbf{[\alph*]},resume]
+  \setlength\itemsep{1em}
+
+\item Dans cet exemple, l'utilisateur {\tt NOM\_A} essaye de copier le
+  fichier {\tt installeTP.sh} qui se trouve dans son répertoire
+  personnel vers le répertoire personnel de {\tt NOM\_B}. Ce n'est pas
+  possible car seul {\tt NOM\_B} a les droits nécessaires pour écrire
+  dans son répertoire personnel. Les autres utilisateurs peuvent voir
+  ses fichiers, les lire, mais pas les modifier. Vous pouvez vérifier
+  cela en tapant la commande {\tt ls -l} dans votre répertoire
+  personnel. Vous verrez que tous vos fichiers et répertoires ont pour
+  propriétaire vous-même et que leur droits interdisent la
+  modification pour tous les autres utilisateurs (pas de droit {\tt
+    w}).
+
+\item Pour récupérer le fichier {\tt installeTP.sh} sur le compte de
+  votre binôme, on est donc obligé de procéder à l'inverse. On se
+  connecte en tant que {\tt NOM\_B} et on copie {\tt installeTP.sh}
+  depuis le répertoire de {\tt NOM\_A}. On a le droit d'effectuer
+  cette copie car on dispose des droits en lecture sur les fichiers de
+  {\tt NOM\_A} (droit {\tt r}) et que la copie ne modifie pas le
+  fichier original. On entre donc la commande :
+
+\begin{verbatim}
+    cp /home/n/NOM_A/installeTP.sh ~
+\end{verbatim}
+
+%\vspace*{0.5cm}
+%
+%
+%\columnratio{0.8,0.2}
+%\begin{paracol}{2}
+%  \begin{leftcolumn}
+%    \begin{enumerate}
+%      \setcounter{enumi}{1}
+%    \item Edgar se place dans son répertoire personnel et lance la commande :
+%\begin{verbatim}
+%        cp ../dude/../dude/tp2 ~/./révision/tp2
+%\end{verbatim}
+%Sa commande va-t-elle fonctionner ? Comment aurait-il pu la simplifier ?
+%    \end{enumerate}
+%  \end{leftcolumn}
+%
+%\begin{rightcolumn}
+%  \dirtree{%
+%    .1 /.
+%    .2 home.
+%    .3 dude.
+%    .4 tp2.
+%    .3 edgar.
+%    .4 révision.
+%  }
+%\end{rightcolumn}
+%\end{paracol}
+%
+%\vspace{2cm}
+%
+%\begin{enumerate}
+%  \setcounter{enumi}{2}
+%\item On souhaite écrire un script qui indique l'appartenance d'un entier à un intervalle. Par exemple, on doit pouvoir vérifier que 4 est compris entre 3 et 10 en tapant :
+%\begin{verbatim}
+%  ./intervalle.sh 3 10 4
+%\end{verbatim}
+%\begin{enumerate}
+%\item Écrire le test (le if) pour vérifier que l'utilisateur a bien donné 3 arguments
+%
+%  \vspace{2cm}
+%
+%\item Écrire le bout de code qui affiche {\tt OK} si le 3\textsuperscript{ème} argument est bien compris entre le 1\textsuperscript{er} et le 2\textsuperscript{ème}, et {\tt KO} sinon
+%\end{enumerate}
+%
+%\newpage
+%
+%\item Écrire un script qui liste tous les fichiers finissant par {\tt .sh} et qui leur donne le droit d'exécution si :
+%  \begin{itemize}
+%  \item Le fichier n'est pas déjà exécutable
+%  \item Le fichier n'est pas un répertoire
+%  \item Le fichier n'est pas vide
+%  \end{itemize}
+%
+%\vspace{8cm}
+%
+%\item Edgar (encore lui) souhaite avoir un programme qui affiche un compte à rebours (10, 9, 8 ...). Pour ce faire, il écrit le script suivant :
+%
+%  \vspace{0.2cm}
+%
+%\begin{verbatim}
+%1       #!/bin/bash
+%2       decompte() {
+%3           if [ $1 -eq 0 ]      # Si on arrive à 0, on s'arrête
+%4           then
+%5               exit 0
+%6           fi
+%7           echo $1              # On dit où on en est
+%8           suiv=$(expr $1 - 1)  # On calcule le chiffre suivant
+%9           decompte $suiv       # On appelle la fonction avec le chiffre suivant
+%10      }
+%11
+%12      decompte 10              # On lance un décompte à partir de 10
+%\end{verbatim}
+%
+%  \vspace{0.2cm}
+%
+%\begin{enumerate}
+%\item Est-ce que son script va fonctionner ?
+%
+%  \vspace{2cm}
+%
+%\item Si, à la ligne 9, Edgar avait appelé : {\tt decompte \$1} au lieu de : {\tt decompte \$suiv}, que se serait-il passé ?
+%\end{enumerate}
+%
+%
+%\end{enumerate}
+%
+%\vspace{2cm}
+  %
+\end{enumerate}
+\end{document}
