@@ -1,0 +1,283 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP5}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\section{GDB}
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item On a utilisé les commandes GDB suivantes :
+
+  \begin{center}
+    \begin{tabular}{|c|c|}
+      \hline
+      \texttt{'p'} & \texttt{'l'} & \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\item Pour tester les différentes fonctions que l'on va écrire
+  (\texttt{mon\_strlen}, \texttt{mon\_strcpy}, \texttt{mon\_strcat},
+  \texttt{mon\_strcmp}), pas le choix, il faut pour chacune d'entre
+  elles écrire un appel pour chacun des cas possibles. C'est un travail
+  long et fastidieux qu'il est pourtant indispensable de faire pour
+  s'assurer qu'un programme fonctionne correctement.
+
+\end{enumerate}
+
+\newpage
+
+\section{Implémentation possible pour \texttt{chaines.c}}
+
+\lstinputlisting{listing/chaines_func.c}
+
+\vspace{0.5cm}
+
+Avant de parcourir le \texttt{main} du fichier \texttt{chaines.c},
+notons plusieurs choses :
+
+\begin{itemize}
+\item \textbf{ATTENTION !} Toutes les fonctions ci-dessus font l'hypothèse que les
+  pointeurs qui leur sont passés en paramètre sont \textbf{non nuls}.
+\item \textbf{ATTENTION !} Toutes celles qui modifient une chaine de
+  caractère considèrent que la mémoire a déjà été allouée. Ex:
+  \texttt{mon\_strcat} considère que \texttt{destination} est un
+  tableau suffisament grand pour stocker le résultat de la
+  concaténation.
+\item On remarque que la fonction \texttt{mon\_strcpy} et les
+  suivantes n'utilisent pas \texttt{mon\_strlen}. Ce n'est pas par
+  masochisme, mais parce que cela permet d'éviter des parcours de
+  chaine inutiles ! Pour connaître la taille, il faut regarder chaque
+  caractère un par un jusqu'à la fin. C'est une opération coûteuse que
+  l'on doit éviter si l'on peut.
+\item Si vous lisez cette implémation consciencieusement, vous ne
+  manquerez pas de constater que \texttt{mon\_strcmp} est écrite un
+  peu légèrement ... En effet, il ne suffit pas qu'un caractère soit
+  situé avant un autre dans la table \texttt{ASCII} pour qu'il le
+  précède selon l'ordre lexicographique. Par exemple, selon la table
+  \texttt{ASCII}, le caractère \texttt{'Z'} est situé avant le
+  caractère \texttt{'a'}. Or la lettre z majuscule n'est pas avant la
+  lettre a minuscule dans l'alphabet. Pourtant, est-ce une mauvaise
+  implémentation ? Elle a le mérite d'être très simple. Par ailleurs,
+  elle est peut être suffisante selon le contexte, par exemple si l'on
+  sait que l'on ne traîte que des chaînes contenant des lettres
+  minuscules. Prenez donc garde à ne pas passer trop de temps à
+  perfectionner un programme qui résout déjà 99\% des cas !
+\end{itemize}
+
+\vspace{0.5cm}
+
+\lstinputlisting{listing/chaines_main.c}
+
+\vspace{0.5cm}
+
+Résultat de l'exécution de cette implémentation :
+
+\vspace{0.5cm}
+
+\begin{verbatim}
+corentin@gazelle:~ $ ./chaine
+un mot (pas plus grand que 50 caractères !) à mesurer ?
+maison
+longueur du mot ('maison') : 6
+
+mon_strcpy(resultat, "copie simple")          resultat = <copie simple>
+mon_strcpy(resultat, "")                      resultat = <>
+mon_strcat(resultat, "ajout1")                resultat = <ajout1>
+mon_strcat(resultat, " ajout2")               resultat = <ajout1 ajout2>
+mon_strcat(resultat, "")                      resultat = <ajout1 ajout2>
+
+mon_strcmp("", "")            = 0
+mon_strcmp("abc", "abc")      = 0
+mon_strcmp("abc", "xbc")      = -1
+mon_strcmp("abc", "abC")      = 1
+mon_strcmp("a", "abc")        = -1
+\end{verbatim}
+
+\section{Fabriquer des phrases}
+
+\begin{enumerate}[label=\textbf{[\alph*]},resume]
+  \setlength\itemsep{1em}
+
+\item On a bien sûr pensé, lors de l'écriture de \texttt{phrases.c}, à
+  ajouter des espaces entre les chaines. Cela donne donc :
+
+  \begin{lstlisting}
+        char Sujet[50]="la petite souris";
+        char Verbe[50]="mange";
+        char Compl[50]="le gros chat";
+        char Phrase[150];
+
+        mon_strcat(Phrase, Sujet);
+        mon_strcat(Phrase, " ");
+        mon_strcat(Phrase, Verbe);
+        mon_strcat(Phrase, " ");
+        mon_strcat(Phrase, Compl);
+  \end{lstlisting}
+
+\item Pour compter les mots dans la phrase, si on l'a construite
+  correctement, il suffit de compter les espaces. Sans oublier de
+  rajouter 1 à la fin, puisqu'il y a une espace entre chaque mot, mais
+  pas à la fin de la phrase. Implémentation complète de
+  \texttt{phrases.c} :
+
+  \vspace{0.5cm}
+
+  \lstinputlisting{listing/phrases.c}
+
+\end{enumerate}
+
+\section{Sacs de billes}
+
+
+\begin{enumerate}[label=\textbf{[\alph*]},resume]
+  \setlength\itemsep{1em}
+
+\item Dans la fonction \texttt{lire\_joueur}, on veut mettre à jour la
+  variable contenant les informations d'un joueur avec ce que
+  l'utilisateur aura tapé au clavier. On doit donc connaître l'adresse
+  où est effectivement stockée cette variable. Or, dans le prototype
+  de fonction : \texttt{lire\_joueur(joueur j)}, le paramètre
+  \texttt{j} n'est pas un pointeur. C'est donc un passage par
+  \textbf{copie}. Si l'on modifie \texttt{j} dans cette fonction,
+  c'est la copie fabriquée pour la fonction qui sera modifiée et non
+  pas la variable originale.
+
+\item Une implémentation possible de billes :
+
+\vspace{0.5cm}
+
+  \lstinputlisting{listing/billes.c}
+
+\end{enumerate}
+
+\newpage
+
+\section{La command \texttt{diff}}
+
+On considère les fichiers \texttt{d1.c}, \texttt{d2.c} et \texttt{d3.c}
+ contenant respectivement :
+
+  \lstinputlisting{listing/d1.c}
+  \lstinputlisting{listing/d2.c}
+  \lstinputlisting{listing/d3.c}
+
+\vspace{0.5cm}
+
+À première vue, ils semblent identiques. Voici le résultat de
+plusieurs commandes \texttt{diff}.
+
+\begin{Verbatim}[xleftmargin=2em]
+corentin@gazelle:listing $ diff d1.c d2.c
+corentin@gazelle:listing $
+\end{Verbatim}
+
+On voit que le diff de \texttt{d1.c} et \texttt{d2.c} se termine
+sans rien imprimer sur l'écran. C'est donc que les deux fichiers sont
+identiques.
+
+\begin{Verbatim}[xleftmargin=2em]
+corentin@gazelle:listing $ diff d1.c d3.c
+4c4
+<       printf("Hello, world!");
+---
+>       printf("Hello, world!\n");
+corentin@gazelle:listing $
+\end{Verbatim}
+
+En revanche, le diff de \texttt{d1.c} et \texttt{d3.c} donne la
+liste des différences entre les deux fichiers. Plusieurs
+explications~:
+
+\begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries gauche/droite}]
+\item[gauche/droite] Ici, on appelle \textit{fichier de gauche}
+\texttt{d1.c} car c'est le premier paramètre donné à \texttt{diff}. Il
+est donc situé à gauche sur la ligne de commande. Par suite,
+\texttt{d3.c} est le fichier de droite.
+\item[4c4] \textbf{4} $\rightarrow$ ligne 4 de \texttt{d1.c} \\
+  \textbf{c} $\rightarrow$ a changé \\
+  \textbf{4} $\rightarrow$ correspond désormais à ligne 4 de \texttt{d3.c}
+\item[\texttt{<}] Indique que la ligne qui suit se trouve dans le fichier de
+  gauche
+\item[\texttt{>}] Indique que la ligne qui suit se trouve dans le gichier de
+  droite
+\item[\texttt{------}] Sépare les lignes situés dans des fichiers différents
+\end{description}
+
+\end{document}
