@@ -1,0 +1,82 @@
+\usepackage{fancyhdr}
+\usepackage{epsfig}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+%\usepackage{verbatim}
+\usepackage{graphics}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{listings}
+\usepackage{thmbox}
+\usepackage{comment}
+
+\oddsidemargin=0cm
+\evensidemargin=0cm
+\textwidth=17cm
+\textheight=25cm
+\topmargin=0mm
+\hoffset=-6mm
+\voffset=-25mm
+%\headsep=30pt
+
+\newcounter{numpartie}
+\newcounter{exo}
+\newcommand{\partie}[2]
+{
+        \refstepcounter{numpartie}
+        \setcounter{exo}{0}
+        \vspace{3mm}
+
+        %\noindent{\large\bf Partie \Alph{numpartie}~-~#1}\hfill
+        \noindent{\large\bf Partie \Alph{numpartie}~ ~#1}\hfill
+        %[\;{\it bar\^eme indicatif : #2}\;]\\
+        \\
+
+}
+
+\newenvironment{exercice}{\refstepcounter{exo} \vspace*{1em}\begin{thmbox}[S]{{\bf Exercice \arabic{exo}~:}}}{\end{thmbox}}
+
+\newenvironment{solution}{\vspace*{1em}\begin{thmbox}[S]{{\bf Solution~:}}}{\end{thmbox}}
+
+\newcommand{\IGNORE}[1]{}
+
+\def\EnteteUE{
+\noindent{\bf Université Grenoble Alpes} \hfill {\bf DLST}
+
+\vspace{-8pt}
+
+\noindent\hrulefill
+
+\vspace{-2pt}
+
+\noindent{\bf UE INF203} \hfill {\bf Année 2016-17}
+
+\vspace*{.5cm}
+}
+
+\newcommand{\PiedDePageUE}[1]{
+\fancypagestyle{monstyle}
+{
+\rhead{}
+\lfoot{{\bf\small INF203 - 2016/2017}}
+\cfoot{\thepage}
+\rfoot{{\it #1}}
+\renewcommand{\footrulewidth}{0.5pt}
+\renewcommand{\headrulewidth}{0.0pt}
+}
+\pagestyle{monstyle}
+}
+
+
+\newcounter{question}
+\newenvironment{question}[1][]{\refstepcounter{question}
+   \textbf{[\bf \alph{question}] {\begin{emph}{#1}\end{emph}}}}{~$\blacksquare$~\\}
+
+\newcommand{\unix}[1]{\hspace*{2cm}{\bf \tt #1}}
+\newcommand{\fich}[1]{{\bf \em #1}}
+\newcommand{\ecran}[1]{{\tt #1}}
+\newcommand{\C}[1]{{\tt #1}}
+\newcommand{\cmd}[1]{{\bf #1}}
+\newcommand{\home}{\~{}}
+
+\newenvironment{exocomp}{\vspace*{1em}\begin{thmbox}[M]{Exercice complémentaire :~}}{\end{thmbox}}

@@ -1,0 +1,203 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP3}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\section{Arguments de la ligne de commande en C}
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item \texttt{argc} représente le nombre d'argument passés au
+  programme par la ligne de commande. Par exemple, quand on exécute :
+
+\begin{verbatim}
+     ./programme abc toto 123
+\end{verbatim}
+
+  Le nombre d'arguments de cette commande, et donc \texttt{argc}, est 4.
+
+  \begin{center}
+    \begin{tabular}{|c|}
+      \hline
+      \texttt{"./programme"} \\
+      \hline
+      \texttt{"abc"} \\
+      \hline
+      \texttt{"toto"} \\
+      \hline
+      \texttt{"123"} \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\textbf{NB:} On voit que le nom du programme fait partie des
+arguments. Il est toujours présent et c'est toujours le premier, à
+l'indice 0 du tableau des arguments.
+
+\item Sans plus de modification, le programme affiche seulement le
+  signe \texttt{'='} et la valeur à laquelle la somme a été
+  initialisée.
+
+\item Une implémentation possible du programme \texttt{somme} :
+
+  \vspace{0.5cm}
+  \lstinputlisting{listing/somme.c}
+
+  \newpage
+  \section{Lecture depuis un fichier, écriture dans un fichier}
+
+\item Si le nombre d'argument passé est incorrect, la plupart du
+  temps, cela signifie que l'utilisateur ne sait pas comment
+  fonctionne le programme. On affiche donc un récapitulatif des
+  options disponibles. On appelle cela un \textbf{USAGE}.
+
+\begin{verbatim}
+    USAGE: ./prog FICHIER
+\end{verbatim}
+
+  Implémentation possible pour \texttt{mes\_entrees\_sorties} :
+
+  \vspace{0.5cm}
+  \lstinputlisting{listing/mes_entrees_sorties.c}
+
+  \newpage
+\item Implémentation possible pour \texttt{mes\_entrees\_sorties} avec
+  la consigne complémentaire :
+
+  \vspace{0.5cm}
+  \lstinputlisting{listing/mes_entrees_sorties_2.c}
+
+  \newpage
+\item On observe que \texttt{cat *.c} affiche successivement tous les
+  fichiers C expansés par l'expression \texttt{*.c}. Une modification
+  possible de \texttt{mon\_cat.c} pour reproduire ce comportement :
+
+  \vspace{0.5cm}
+  \lstinputlisting{listing/mon_cat.c}
+
+\item On observe que \texttt{cat} appelé sans argument lit les données
+  à afficher sur l'entrée standard. C'est à dire que lorsqu'on lance
+  la commande :
+
+\begin{verbatim}
+    cat
+\end{verbatim}
+
+  Le terminal se bloque en attente de l'entrée utilisateur. On peut
+  alors taper du texte au clavier. Puis, lorsque l'on tape
+  \texttt{entrée}, la ligne que l'on vient de terminer est ré-affichée
+  par \texttt{cat}. Ce comportement se poursuit jusqu'à que l'on
+  interrompe le flux en tapant Ctrl + D. \\
+
+  Reproduire ce comportement est un peu difficile car il n'existe pas
+  de moyen simple pour faire un scanf sur une ligne en C, c'est à dire
+  jusqu'à un retour chariot. On peut utiliser \texttt{"\%c"} pour un
+  caractère, \texttt{"\%s"} pour un mot, mais il n'y a pas de marqueur
+  pour la ligne entière. De plus, il est impossible de prévoir à
+  l'avance la taille des lignes que l'utilisateur va entrer au
+  clavier. Pour se prémunir d'un débordement de tableau, il faut donc
+  être très vigilent. Voir à la page suivante une implémentation
+  possible de \texttt{cat} qui reproduit le comportement de la
+  commande originale~:
+
+  \newpage
+  \lstinputlisting{listing/mon_cat_2.c}
+
+  \newpage
+  \section{Caractères imprimables}
+
+\item Pour trouver l'ensemble des caractères imprimables, on utilise
+  la commande \texttt{man ascii}, qui contient un rappel de la table
+  ASCII. On constate que les caractères imprimables forment un bloc
+  contigu. Ce sont les caractères compris entre le \texttt{'!'} et le
+  \texttt{'~'}. C'est à dire ceux dont le code est compris entre 33 et
+  126.
+
+  Voilà une implémentation possible de \texttt{occurences} :
+
+  \vspace{0.5cm}
+  \lstinputlisting{listing/occurences.c}
+
+
+  \newpage
+  \section{La commande de la semaine : find}
+
+\item Réponse lorsque j'aurai accès à Turing !
+
+\end{enumerate}
+\end{document}
