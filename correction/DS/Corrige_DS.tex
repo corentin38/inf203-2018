@@ -1,0 +1,180 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé du DS de mi-semestre}}
+\end{center}
+
+\vspace*{2cm}
+
+\begin{center}
+  {\large {\bf Unix}}
+\end{center}
+
+\section{Beaucoup de programmes}
+
+\begin{enumerate}
+  \setlength\itemsep{1em}
+
+\item Créer un répertoire \texttt{Programmes} et y copier tous nos fichiers C :
+
+  \lstset{style=none}
+  \begin{lstlisting}
+    mkdir Programmes
+    cp INF203/TP*/*.c Programmes
+  \end{lstlisting}
+
+
+\item Donner accès au répertoire \texttt{Programmes} à votre binôme :
+
+  \lstset{style=none}
+  \begin{lstlisting}
+    chmod g+x ~                  # Donner au binôme le droit de traverser ~
+    chmod g+x Programmes         # Donner au binôme le droit de traverser Programmes
+  \end{lstlisting}
+
+  \vspace{0.5cm}
+
+  \textbf{Petites précisions :} \\
+  Après les commandes ci-dessus, l'utilisateur a le droit de
+  \textit{traverser} notre répertoire de login, mais pas de le lire. Cela
+  signifie qu'il pourra faire un \texttt{cd <mon\_login>} mais qu'une
+  fois à l'intérieur, il ne pourra pas faire un \texttt{ls}. Il lui
+  faudra connaître le nom exact du répertoire \texttt{Programmes} pour
+  faire la commande \texttt{cd~Programmes}. Ce dernier lui donne par
+  contre les droits \texttt{r} et \texttt{x}, donc non-seulement celui
+  de faire un \texttt{cd} dedans, mais aussi celui de faire un
+  \texttt{ls}. Par la suite, tous les programmes ont déjà le droit
+  \texttt{r} pour les utilisateurs du même groupe que nous, le binôme
+  pourra donc faire la commande \texttt{cp} pour les recopier chez lui
+  sans problème.
+
+\item Pour déplacer \texttt{Programmes} dans \texttt{Archives} et le
+  renommer :
+
+  \lstset{style=none}
+  \begin{lstlisting}
+    mv Programmes Archives/Programmes_2016-2017
+  \end{lstlisting}
+
+\item Pour supprimer tous les fichier / répertoires du dossier
+  \texttt{Archives} dont le nom contient \texttt{2016-2017} :
+
+  \lstset{style=none}
+  \begin{lstlisting}
+    rm -r Archives/*2016-2017*
+  \end{lstlisting}
+
+\item Pour compter le nombre de fichiers ayant 203 et 42 dans leur nom
+  dans tous nos programmes en C, pas le choix, il faut utiliser la
+  commande \texttt{find} et se souvenir de sa syntaxe exotique.
+
+  \lstset{style=none}
+  \begin{lstlisting}
+    find INF203 \( -name "*.c" -a -name "*42*" -a -name "*203*" \) | wc -l
+  \end{lstlisting}
+
+  \vspace{0.5cm}
+  Explications:
+  \vspace{0.2cm}
+
+  \begin{tabular}{l p{10cm}}
+    \verb|\( expr1 -a expr2 \)| & permet de combiner les
+                                  expressions. Ici, \texttt{find} ne listera
+                                  que les fichiers respectant
+                                  \texttt{expr1} \textbf{et}
+                                  \texttt{expr2}. \vspace{0.2cm} \\
+    \verb|-name "*42*"|         & est l'expression pour indiquer que le nom doit
+                                  contenir 42. (Pour les connaisseurs,
+                                  attention, ce n'est pas une
+                                  regex, mais un pattern shell) \vspace{0.2cm} \\
+    \verb#| wc -l#              & à la fin de la commande redirige la sortie de
+                                  \texttt{find} vers \texttt{wc} qui, avec l'option
+                                  \texttt{-l}, compte les lignes \\
+  \end{tabular}
+
+\end{enumerate}
+
+%\begin{enumerate}[label=\textbf{[\alph*]},resume]
+%  \setlength\itemsep{1em}
+%
+%%  \lstinputlisting{listing/billes.c}
+%
+%\begin{Verbatim}[xleftmargin=2em]
+%corentin@gazelle:listing $ diff d1.c d2.c
+%corentin@gazelle:listing $
+%\end{Verbatim}
+%
+%\end{enumerate}
+
+\end{document}
