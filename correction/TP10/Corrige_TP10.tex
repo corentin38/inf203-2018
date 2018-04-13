@@ -1,0 +1,552 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\makeatletter
+\lst@InstallKeywords k{attributes}{attributestyle}\slshape{attributestyle}{}ld
+\makeatother
+
+\definecolor{mygreen}{rgb}{0,0.3,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.9,0,0.4}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{transitionc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  moreattributes={Q1, Q2, Q3, Q4},
+  attributestyle = \bfseries\color{mymauve},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP10}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\section{Encore des automates ...}
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item Le code de la porte est \textbf{1234}. En effet, on peut voir
+  qu'on arrive dans l'état initial \texttt{Q0} dans lequel tout
+  chiffre différent de 1 ramène au même état. Puis, si on tape 1, on
+  aboutit à l'état \texttt{Q1} dans lequel tout chiffre différent de 2
+  ramène à l'état \texttt{Q0}, et ainsi de suite jusqu'au chiffre
+  4. Seul la séquence d'entrée \textbf{1234} amène l'automate à
+  produire la sortie \textbf{"clic"}.
+
+\item Pour arrêter la simulation, il faut entrer \textbf{"-"}. En
+  effet, si on observe la fonction \texttt{lire\_entree}, le programme
+  demande à l'utilisateur d'entrer un caractère au clavier jusqu'à ce
+  que le résultat soit un chiffre en 0 et 9, ou un tiret. Si c'est
+  bien un chiffre qui est entré, la valeur du chiffre est renvoyée (
+  \texttt{c - '0'} ), sinon -1. Et la fonction
+  \texttt{simule\_automate} boucle tant que l'entrée est différente de
+  -1.
+
+\item Je n'avais absolument pas remarquée la fonction pour tester si
+  un état est final. On peut donc utiliser le retour de la fonction
+  \texttt{est\_final} dans la condition de notre \texttt{while} pour
+  s'arrêter lorsque l'état final est atteint.
+
+  \vspace{0.2cm}
+  Voici une implémentation de Digicode\_V1 (Seulement le fichier
+  \texttt{automate.c}, les autres restent inchangés) :
+
+  \lstinputlisting{listing/Digicode_V1/automate.c}
+
+  \newpage
+  Voilà une implémentation possible pour la fonction
+  \texttt{transition} et l'adaptation de la fonction
+  \texttt{simule\_automate} correspondante.
+
+  \vspace{0.2cm}
+  On note que la sortie \textbf{"clic"} est affichée dans la fonction
+  de transition. Ce n'est pas complètement satisfaisant et l'on
+  pourrait plutôt séparer cette sortie dans une fonction à part.
+
+  \lstinputlisting{listing/Digicode_V2/automate.c}
+
+  \newpage
+\item Voilà la représentation de la fonction de transition de notre
+  digicode.
+
+  \begin{center}
+    \begin{tabular}{|l|c|c|c|c|c|}
+      \hline
+      & 1 & 2 & 3 & 4 & 0, 5, 6, 7, 8, 9 \\
+      \hline
+      \textbf{Q0} & Q1 & Q0 & Q0 & Q0 & Q0 \\
+      \textbf{Q1} & Q1 & Q2 & Q0 & Q0 & Q0 \\
+      \textbf{Q2} & Q1 & Q0 & Q3 & Q0 & Q0 \\
+      \textbf{Q3} & Q1 & Q0 & Q0 & Q4 & Q0 \\
+      \textbf{Q4} & Q1 & Q0 & Q0 & Q0 & Q0 \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  On note que dans cet représentation, les entrées 0, 5, 6, 7, 8, 9
+  ont été factorisées car l'automate se comporte de la même manière
+  dans tous ces cas. Mais ce ne sera pas toujours le cas, en
+  particulier si l'on change le code ! Dans notre implémentation, nous
+  choisirons donc de coder le tableau de transition en donnant une
+  colone par chiffre. \\
+
+  Voilà donc une implémentation du tableau des transitions dans
+  Digicode\_V3, suivie de la fonction \texttt{simule\_automate}
+  adaptée :
+
+  \lstset{style=transitionc}
+  \lstinputlisting{listing/Digicode_V3/automate.c}
+
+\item Pour la sortie, on ne peut évidemment plus inclure la seule
+  sortie \textbf{"clic"} dans le tableau de transition, comme on le
+  faisait dans l'ammas de switchs. On a donc pris le parti, dans cette
+  implémentation, d'intégrer la sortie dans la fonction
+  \texttt{simule\_automate} à l'aide d'un petit \texttt{if}. On note
+  bien que si l'automate avait plus sorties, il aurait sans doute
+  fallu les traiter dans une fonction dédiée.
+
+\item Nous voilà donc arrivé au moment fatidique tant attendu : il
+  faut maintenant changer le code de la porte. Dans la version
+  Digicode\_V3, le code est intégré dans le tableau de
+  transition. Voilà un tableau de transition pour le code
+  \textbf{2345} :
+
+  \lstset{style=transitionc}
+  \begin{lstlisting}
+    etat transition [NB_ETATS][NB_ENTREES] = {
+      /* entrees ->  0,  1,  2,  3,  4,  5,  6,  7,  8,  9 */
+      /* Q0 */     { Q0, Q0, Q1, Q0, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q1 */     { Q0, Q0, Q1, Q2, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q2 */     { Q0, Q0, Q1, Q0, Q3, Q0, Q0, Q0, Q0, Q0 },
+      /* Q3 */     { Q0, Q0, Q1, Q0, Q0, Q4, Q0, Q0, Q0, Q0 },
+      /* Q4 */     { Q0, Q0, Q1, Q0, Q0, Q0, Q0, Q0, Q0, Q0 }
+    };
+  \end{lstlisting}
+
+  \newpage
+
+  Une autre implémentation pour le code \textbf{3874} :
+
+  \lstset{style=transitionc}
+  \begin{lstlisting}
+    etat transition [NB_ETATS][NB_ENTREES] = {
+      /* entrees ->  0,  1,  2,  3,  4,  5,  6,  7,  8,  9 */
+      /* Q0 */     { Q0, Q0, Q0, Q1, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q1 */     { Q0, Q0, Q0, Q1, Q0, Q0, Q0, Q0, Q2, Q0 },
+      /* Q2 */     { Q0, Q0, Q0, Q1, Q0, Q0, Q0, Q3, Q0, Q0 },
+      /* Q3 */     { Q0, Q0, Q0, Q1, Q4, Q0, Q0, Q0, Q0, Q0 },
+      /* Q4 */     { Q0, Q0, Q0, Q1, Q0, Q0, Q0, Q0, Q0, Q0 }
+    };
+  \end{lstlisting}
+
+  Le code peut bien sûr comporter plusieurs fois le même
+  chiffre. Exemple avec un implémentation pour le code \textbf{1212} :
+
+  \lstset{style=transitionc}
+  \begin{lstlisting}
+    etat transition [NB_ETATS][NB_ENTREES] = {
+      /* entrees ->  0,  1,  2,  3,  4,  5,  6,  7,  8,  9 */
+      /* Q0 */     { Q0, Q1, Q0, Q0, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q1 */     { Q0, Q1, Q2, Q0, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q2 */     { Q0, Q3, Q0, Q0, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q3 */     { Q0, Q1, Q4, Q0, Q0, Q0, Q0, Q0, Q0, Q0 },
+      /* Q4 */     { Q0, Q1, Q0, Q0, Q0, Q0, Q0, Q0, Q0, Q0 }
+    };
+  \end{lstlisting}
+
+\item On remarque qu'on a modifié seulement le Digicode\_V3 dans cette
+  correction. Pour modifier le code dans les version 1 et 2, il aurait
+  fallu modifier les switchs, ce qui est très fastidieux. Dans la
+  version \textbf{tabulaire}, on peut se concentrer sur la logique de
+  l'automate indépendemment de l'implémentation. Cela en fait une
+  version beaucoup plus maintenable, c'est à dire facile à modifier
+  en limitant le risque d'introduction de nouveaux bugs.\\
+
+  Bien entendu, quelle que soit la version choisie, seuls des tests
+  rigoureux, et si possible automatiques, pourront nous donner
+  confiance dans notre code.
+
+\item Dans les exemples précédents de table de transition, les états
+  différents de \texttt{Q0} sont coloriés en rouge. On voit donc bien
+  que taper le premier chiffre du code doit toujours mener à l'état
+  \texttt{Q1}, quel que soit l'état de départ. En effet, taper le bon
+  premier chiffre est toujours potentiellement le début d'une bonne
+  séquence.
+  \vspace{0.2cm}
+
+  En revanche, taper les chiffres suivants du code ne doit mener à
+  l'état correspondant que si on a entré précédemment les bons
+  chiffres. Ensuite, taper n'importe quel chiffre qui n'est pas dans
+  la combinaison ou qui est précédé d'une combinaison erronnée doit
+  ramener à l'état d'origine \texttt{Q0}.
+  \vspace{0.2cm}
+
+  Voilà pourquoi la table contient partout des \texttt{Q0}, sauf sur
+  la colonne correspondant au premier chiffre du code, où elle
+  contient des \texttt{Q1}, puis seulement un \texttt{Q2}, un
+  \texttt{Q3} et un \texttt{Q4} aux transitions correspondant à la
+  bonne séquence de code entrée.
+  \vspace{2cm}
+
+  \newpage
+
+\item Dans la suite, on lit l'automate depuis un fichier de
+  sauvegarde. Avant de se plonger dans le listing, voilà quelques
+  explications sur les choix techniques.
+
+  \begin{itemize}
+  \item Le format choisi pour le fichier est le suivant :
+\begin{verbatim}
+1
+2
+3
+4
+Porte ouverte !
+\end{verbatim}
+    On reconnait les quatre chiffres du code ainsi que le message qui
+    s'affiche lorsqu'on a entré la bonne combinaison. Certains
+    d'entre-vous auront peut être ré-employé la methode du TP9, en
+    sauvegardant l'intégralité de la table de transition et de la
+    table de sortie. Ce n'est absolument pas nécessaire dans ce
+    cas. En effet, connaissant le code, et le message de
+    déverrouillage désiré, nous pourrons reconstituer ces deux
+    tables. Ce fichier de sauvegarde contient donc l'intégratlité des
+    données dont nous avons besoin.
+
+  \item Par ailleurs, on a placé chaque chiffre sur une ligne pour
+    éviter de lire un seul int comme \textbf{1234}, ce qui aurait
+    nécessité quelques caluls pour extraire les chiffres
+    individuellements. On a le choix du format, alors on en profite !
+
+  \item Dans le fichier \texttt{automate.c}, vous ne trouverez pas la
+    fonction \texttt{init\_par\_defaut} demandée dans le sujet du
+    TP. C'est parce qu'elle est redondante avec l'initialisation de
+    mon tableau de transition tel que je l'ai réalisé.
+
+  \item On ajoute donc deux fonctions, \texttt{lecture\_automate} et
+    \texttt{init\_automate} qui vont respectivement lire le fichier de
+    sauvegarde et configurer la table de transition avec les valeurs
+    obtenues. La fonction \texttt{lecture\_automate} devra maintenant
+    être appelée dans le \texttt{main} avant d'utiliser
+    l'automate. Donc elle doit être visible depuis l'extérieur du
+    fichier \texttt{automate.c} ce qui justifie qu'elle soit déclarée
+    dans le fichier \texttt{automate.h}
+
+  \item Observée l'élégance avec laquelle j'ai employé une structure
+    pour stocker le message de sortie !
+  \end{itemize}
+  \vspace{0.2cm}
+
+  Sans plus attendre voici le code de \texttt{automate.c} :
+  \vspace{0.2cm}
+
+  \lstset{style=customc}
+  \lstinputlisting{listing/Digicode_V4/automate.c}
+  \vspace{0.2cm}
+
+  Puis le code de \texttt{automate.h} :
+  \vspace{0.2cm}
+
+  \lstinputlisting{listing/Digicode_V4/automate.h}
+  \vspace{0.2cm}
+
+  Et enfin le code de \texttt{main.c}
+  \vspace{0.2cm}
+
+  \lstinputlisting{listing/Digicode_V4/main.c}
+  \vspace{0.2cm}
+
+  Sans oublier le fichier de sauvegarde :
+  \vspace{0.2cm}
+
+  \lstset{style=none}
+  \lstinputlisting{listing/Digicode_V4/sauvegarde.sav}
+  \vspace{0.2cm}
+
+
+\end{enumerate}
+
+
+
+
+
+
+
+
+%
+%\item On a utilisé les commandes GDB suivantes :
+%
+%  \begin{center}
+%    \begin{tabular}{|c|c|}
+%      \hline
+%      \texttt{'p'} & \texttt{'l'} & \\
+%      \hline
+%    \end{tabular}
+%  \end{center}
+%
+%\item Pour tester les différentes fonctions que l'on va écrire
+%  (\texttt{mon\_strlen}, \texttt{mon\_strcpy}, \texttt{mon\_strcat},
+%  \texttt{mon\_strcmp}), pas le choix, il faut pour chacune d'entre
+%  elles écrire un appel pour chacun des cas possibles. C'est un travail
+%  long et fastidieux qu'il est pourtant indispensable de faire pour
+%  s'assurer qu'un programme fonctionne correctement.
+%
+%\end{enumerate}
+%
+%\newpage
+%
+%\section{Implémentation possible pour \texttt{chaines.c}}
+%
+%\lstinputlisting{listing/chaines_func.c}
+%
+%\vspace{0.5cm}
+%
+%Avant de parcourir le \texttt{main} du fichier \texttt{chaines.c},
+%notons plusieurs choses :
+%
+%\begin{itemize}
+%\item \textbf{ATTENTION !} Toutes les fonctions ci-dessus font l'hypothèse que les
+%  pointeurs qui leur sont passés en paramètre sont \textbf{non nuls}.
+%\item \textbf{ATTENTION !} Toutes celles qui modifient une chaine de
+%  caractère considèrent que la mémoire a déjà été allouée. Ex:
+%  \texttt{mon\_strcat} considère que \texttt{destination} est un
+%  tableau suffisament grand pour stocker le résultat de la
+%  concaténation.
+%\item On remarque que la fonction \texttt{mon\_strcpy} et les
+%  suivantes n'utilisent pas \texttt{mon\_strlen}. Ce n'est pas par
+%  masochisme, mais parce que cela permet d'éviter des parcours de
+%  chaine inutiles ! Pour connaître la taille, il faut regarder chaque
+%  caractère un par un jusqu'à la fin. C'est une opération coûteuse que
+%  l'on doit éviter si l'on peut.
+%\item Si vous lisez cette implémation consciencieusement, vous ne
+%  manquerez pas de constater que \texttt{mon\_strcmp} est écrite un
+%  peu légèrement ... En effet, il ne suffit pas qu'un caractère soit
+%  situé avant un autre dans la table \texttt{ASCII} pour qu'il le
+%  précède selon l'ordre lexicographique. Par exemple, selon la table
+%  \texttt{ASCII}, le caractère \texttt{'Z'} est situé avant le
+%  caractère \texttt{'a'}. Or la lettre z majuscule n'est pas avant la
+%  lettre a minuscule dans l'alphabet. Pourtant, est-ce une mauvaise
+%  implémentation ? Elle a le mérite d'être très simple. Par ailleurs,
+%  elle est peut être suffisante selon le contexte, par exemple si l'on
+%  sait que l'on ne traîte que des chaînes contenant des lettres
+%  minuscules. Prenez donc garde à ne pas passer trop de temps à
+%  perfectionner un programme qui résout déjà 99\% des cas !
+%\end{itemize}
+%
+%\vspace{0.5cm}
+%
+%\lstinputlisting{listing/chaines_main.c}
+%
+%\vspace{0.5cm}
+%
+%Résultat de l'exécution de cette implémentation :
+%
+%\vspace{0.5cm}
+%
+%\begin{verbatim}
+%corentin@gazelle:~ $ ./chaine
+%un mot (pas plus grand que 50 caractères !) à mesurer ?
+%maison
+%longueur du mot ('maison') : 6
+%
+%mon_strcpy(resultat, "copie simple")          resultat = <copie simple>
+%mon_strcpy(resultat, "")                      resultat = <>
+%mon_strcat(resultat, "ajout1")                resultat = <ajout1>
+%mon_strcat(resultat, " ajout2")               resultat = <ajout1 ajout2>
+%mon_strcat(resultat, "")                      resultat = <ajout1 ajout2>
+%
+%mon_strcmp("", "")            = 0
+%mon_strcmp("abc", "abc")      = 0
+%mon_strcmp("abc", "xbc")      = -1
+%mon_strcmp("abc", "abC")      = 1
+%mon_strcmp("a", "abc")        = -1
+%\end{verbatim}
+%
+%\section{Fabriquer des phrases}
+%
+%\begin{enumerate}[label=\textbf{[\alph*]},resume]
+%  \setlength\itemsep{1em}
+%
+%\item On a bien sûr pensé, lors de l'écriture de \texttt{phrases.c}, à
+%  ajouter des espaces entre les chaines. Cela donne donc :
+%
+%  \begin{lstlisting}
+%        char Sujet[50]="la petite souris";
+%        char Verbe[50]="mange";
+%        char Compl[50]="le gros chat";
+%        char Phrase[150];
+%
+%        mon_strcat(Phrase, Sujet);
+%        mon_strcat(Phrase, " ");
+%        mon_strcat(Phrase, Verbe);
+%        mon_strcat(Phrase, " ");
+%        mon_strcat(Phrase, Compl);
+%  \end{lstlisting}
+%
+%\item Pour compter les mots dans la phrase, si on l'a construite
+%  correctement, il suffit de compter les espaces. Sans oublier de
+%  rajouter 1 à la fin, puisqu'il y a une espace entre chaque mot, mais
+%  pas à la fin de la phrase. Implémentation complète de
+%  \texttt{phrases.c} :
+%
+%  \vspace{0.5cm}
+%
+%  \lstinputlisting{listing/phrases.c}
+%
+%\end{enumerate}
+%
+%\section{Sacs de billes}
+%
+%
+%\begin{enumerate}[label=\textbf{[\alph*]},resume]
+%  \setlength\itemsep{1em}
+%
+%\item Dans la fonction \texttt{lire\_joueur}, on veut mettre à jour la
+%  variable contenant les informations d'un joueur avec ce que
+%  l'utilisateur aura tapé au clavier. On doit donc connaître l'adresse
+%  où est effectivement stockée cette variable. Or, dans le prototype
+%  de fonction : \texttt{lire\_joueur(joueur j)}, le paramètre
+%  \texttt{j} n'est pas un pointeur. C'est donc un passage par
+%  \textbf{copie}. Si l'on modifie \texttt{j} dans cette fonction,
+%  c'est la copie fabriquée pour la fonction qui sera modifiée et non
+%  pas la variable originale.
+%
+%\item Une implémentation possible de billes :
+%
+%\vspace{0.5cm}
+%
+%  \lstinputlisting{listing/billes.c}
+%
+%\end{enumerate}
+%
+%\newpage
+%
+%\section{La command \texttt{diff}}
+%
+%On considère les fichiers \texttt{d1.c}, \texttt{d2.c} et \texttt{d3.c}
+% contenant respectivement :
+%
+%  \lstinputlisting{listing/d1.c}
+%  \lstinputlisting{listing/d2.c}
+%  \lstinputlisting{listing/d3.c}
+%
+%\vspace{0.5cm}
+%
+%À première vue, ils semblent identiques. Voici le résultat de
+%plusieurs commandes \texttt{diff}.
+%
+%\begin{Verbatim}[xleftmargin=2em]
+%corentin@gazelle:listing $ diff d1.c d2.c
+%corentin@gazelle:listing $
+%\end{Verbatim}
+%
+%On voit que le diff de \texttt{d1.c} et \texttt{d2.c} se termine
+%sans rien imprimer sur l'écran. C'est donc que les deux fichiers sont
+%identiques.
+%
+%\begin{Verbatim}[xleftmargin=2em]
+%corentin@gazelle:listing $ diff d1.c d3.c
+%4c4
+%<       printf("Hello, world!");
+%---
+%>       printf("Hello, world!\n");
+%corentin@gazelle:listing $
+%\end{Verbatim}
+%
+%En revanche, le diff de \texttt{d1.c} et \texttt{d3.c} donne la
+%liste des différences entre les deux fichiers. Plusieurs
+%explications~:
+%
+%\begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries gauche/droite}]
+%\item[gauche/droite] Ici, on appelle \textit{fichier de gauche}
+%\texttt{d1.c} car c'est le premier paramètre donné à \texttt{diff}. Il
+%est donc situé à gauche sur la ligne de commande. Par suite,
+%\texttt{d3.c} est le fichier de droite.
+%\item[4c4] \textbf{4} $\rightarrow$ ligne 4 de \texttt{d1.c} \\
+%  \textbf{c} $\rightarrow$ a changé \\
+%  \textbf{4} $\rightarrow$ correspond désormais à ligne 4 de \texttt{d3.c}
+%\item[\texttt{<}] Indique que la ligne qui suit se trouve dans le fichier de
+%  gauche
+%\item[\texttt{>}] Indique que la ligne qui suit se trouve dans le gichier de
+%  droite
+%\item[\texttt{------}] Sépare les lignes situés dans des fichiers différents
+%\end{description}
+%
+\end{document}
