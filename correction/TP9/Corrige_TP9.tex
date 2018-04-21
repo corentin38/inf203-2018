@@ -1,0 +1,302 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\makeatletter
+\lst@InstallKeywords k{attributes}{attributestyle}\slshape{attributestyle}{}ld
+\makeatother
+
+\definecolor{mygreen}{rgb}{0,0.3,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.9,0,0.4}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP9}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\begin{center}
+  {\large {\bf Automates}}
+\end{center}
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item En lisant la fonction d'initialisation de l'automate
+  \texttt{init\_par\_defaut}, on voit que pour chaque état, on
+  paramètre une transition retournant au même état, quelle que soit
+  l'entrée. Au niveau de l'instruction :
+
+  \lstset{style=customc}
+  \begin{lstlisting}
+    A->transitions[i][j]=i;
+  \end{lstlisting}
+
+  En effet, la variable \texttt{A} de type \texttt{automate} contient
+  la table de transition qui à chaque couple état/entrée
+  (ligne/colonne) fait correspondre un nouvel état. Dans l'instruction
+  ci dessus, l'indice \texttt{i} parcourt tous les numéros d'état et
+  l'indice \texttt{j} tous les numéros d'entrée. Et dans la case à la
+  ligne \texttt{i} et à la colonne \texttt{j}, on place le numéro
+  d'état \texttt{i} correspondant donc à l'état d'où l'on part.
+
+\item En lisant la définition du type \texttt{automate} :
+
+  \lstset{style=customc}
+  \begin{lstlisting}
+    typedef struct {
+      int nb_etats;
+      int etat_initial;
+      int etats_finals[NB_MAX_ETATS];
+      int transitions[NB_MAX_ETATS][NB_MAX_ENTREES];
+      char sortie[NB_MAX_ETATS][NB_MAX_ENTREES][LG_MAX_SORTIE];
+    } automate;
+  \end{lstlisting}
+
+  On voit que la table de transition contient \texttt{NB\_MAX\_ETATS}
+  lignes et \texttt{NB\_MAX\_ENTREES} colonnes. Ces deux constantes
+  valent 128, ce qui correspond au nombre de caractères de la table
+  ASCII. L'ensemble d'entrée de l'automate pourra donc potentiellement
+  être \textbf{l'ensemble des caractères ASCII}.
+  \vspace{0.2cm}
+
+  Mais en observant la fonction \texttt{init\_mon\_automate}, on voit
+  que seuls 2 états sont utilisés ainsi que 3 entrées : les caractères
+  '2', 'r' et 'c'. Toutes les transitions utilisant d'autres
+  caractères mènent à une sortie \texttt{"entree\_invalide"}. La
+  conclusion est que notre implémentation permet de gérer n'importe
+  quel automate acceptant des caractères ASCII, et que l'automate qui
+  actuellement paramètré a l'ensemble d'entrée : \texttt{\{2,r,c\}}.
+  \vspace{0.2cm}
+
+  Cet ensemble d'entrée correspond évidemment aux actions :
+  \textit{"mettre une pièce de 20 centimes"}, \textit{"appuyer sur le
+    bouton café"} et \textit{"appuyer sur le bouton rendre monnaie"} que l'on
+  pourrait effectuer sur une machine à café.
+
+\item Lorsque l'on saisi des caractères non prévus, comme expliqué
+  ci-dessus, on reste dans le même état et le message
+  "entree\_invalide" s'affiche.
+
+\item Voici une implémentation possible pour Café1.
+  \vspace{0.2cm}
+
+  On commence bien sûr par rédiger rapidement un Makefile (puisqu'on a
+  l'habitude et qu'on est très à l'aise avec les Makefiles).
+
+  \lstset{style=none}
+  \begin{lstlisting}
+    automate: automate.o main.o
+        clang automate.o main.o -o automate
+
+    automate.o: automate.c automate.h
+	    clang -c automate.c
+
+    main.o: main.c automate.h
+	    clang -c main.c
+  \end{lstlisting}
+  \vspace{0.2cm}
+
+  \newpage
+  On complète ensuite la fonction \texttt{simule\_automate} comme
+  suit~:
+
+  \lstset{style=customc}
+  \lstinputlisting{listing/Cafe1/extrait.c}
+  \vspace{0.2cm}
+
+\item Nous passons maintenant à l'implémentation de Cafe2, qui va lire
+  l'automate depuis un fichier avant de le simuler. On commence par
+  écrire la fonction \texttt{lecture\_automate} qui interprète le
+  fichier \texttt{Mon\_automate.auto}.
+  \vspace{0.2cm}
+
+  Le format du fichier est bien décrit dans le sujet du TP. Vous savez
+  manipuler la fonction \texttt{fscanf} pour lire tous les entiers et
+  les caractères requis, voilà donc sans plus attendre une
+  implémentation possible :
+
+  \lstset{style=customc}
+  \lstinputlisting{listing/Cafe2/extrait.c}
+  \vspace{0.2cm}
+
+  On note que l'on met une chaîne vide dans toutes les sorties
+  correspondant à une transition lue, puis qu'on la reconfigure
+  lorsqu'on lit la section des sorties. Ce n'est pas une erreur : on
+  n'est en effet pas obligé de définir une sortie pour toutes les
+  transitions que l'on a écrites. Une transition sans sortie doit donc
+  logiquement afficher une chaîne vide. Sans cette assignation, la
+  sortie d'une telle transition serait celle par defaut, c'est à dire
+  \textbf{entree\_invalide}.
+
+\item Voir listing ci-dessus pour \texttt{lecture\_automate}. Voici
+  également la fonction main :
+
+  \lstset{style=customc}
+  \lstinputlisting{listing/Cafe2/main.c}
+  \vspace{0.2cm}
+
+  Et le header modifié :
+
+  \lstset{style=customc}
+  \lstinputlisting{listing/Cafe2/automate.h}
+  \vspace{0.2cm}
+  \newpage
+
+\item Pour connaître la taille d'un type, on peut utiliser
+  l'instruction \texttt{sizeof}. On passe en paramètre à cette
+  dernière le nom du type que l'on souhaite, comme s'il s'agissait
+  d'une fonction. Le résultat retourné est la taille qu'occuperait une
+  variable du type choisi en octet. \texttt{sizeof(int)} par
+  exemple, renvoit 4 sur mon ordinateur.
+  \vspace{0.2cm}
+
+  Attention, cela ne marche que pour les types statiques ! Il ne faut
+  \textbf{surtout pas} avoir l'idée saugrenue de s'en servir pour
+  chercher le nombre d'élément d'un tableau ou la longueur d'une
+  chaîne de caractère !
+  \vspace{0.2cm}
+
+  Pour connaître la taille du type automate, on rajoute donc dans le
+  main la ligne :
+
+\begin{lstlisting}
+	printf ("taille automate : %d\n", sizeof(automate));
+\end{lstlisting}
+  \vspace{0.2cm}
+
+  Et l'on voit que la taille de l'automate est de 2163208 octets. Soit
+  environs \textbf{2 méga octets} !
+  \vspace{0.2cm}
+
+  On comprend vite pourquoi : pour être générique, notre
+  implémentation permet de définir 128 états et 128 entrées. Il y a
+  donc 128 * 128 = 16384 transitions possibles. C'est le nombre de
+  case de notre tableau de transition, ce qui en fait déjà un grand
+  tableau ...
+  \vspace{0.2cm}
+
+  Pire ! Notre implémentation permet de stocker un message de sortie
+  de 128 caractères maximum pour \textbf{chaque} transition. Le
+  tableau de sortie contient donc 128 * 128 * 128 = 2097152 octets,
+  soit 2Mo à lui tout seul. C'est là que la taille de l'automate
+  explose véritablement.
+  \vspace{0.2cm}
+
+  On comprends donc que des choix qui paraissent raisonables aux
+  premiers abords (128 états possible, 128 entrées possibles et 128
+  caractères pour une sortie, ces choix pris individuellement semblent
+  tout à fait acceptables) peuvent en fait conduire très rapidement à
+  une forte consommation de mémoire. Prudence, donc ! D'autant que
+  dans notre cas, lorsque l'on paramètre l'automate café1 dans notre
+  programme, seuls 2 états, 3 entrées et 4 sorties sont réellement
+  utilisées. Nos tableaux de transition et de sortie sont donc
+  quasiment vides ! En conclusion, notre implémentation d'automate a
+  le mérite d'être simple à comprendre et à utiliser, mais elle n'est
+  \textbf{vraiment pas} optimale !
+
+\item Voilà un nouvel automate pour notre machine à café 2.0.
+
+  \begin{center}
+    Oulala ! Le beau schéma !
+  \end{center}
+
+  On remarque qu'il faut deux états intermédiaires supplémentaires
+  pour gérer les pièces de 10 et 20 centimes. Sinon, l'automate
+  ressemble fortement à la version précédente.
+  \vspace{0.2cm}
+
+  Voilà son fichier auto pour simuler l'automate avec notre
+  programme~:
+
+  \lstset{style=none}
+  \lstinputlisting{listing/Cafe2/Autre_automate.auto}
+  \vspace{0.2cm}
+
+\item Pas de spoil, on ne donnera pas ici la solution du mystère !
+  Simplement l'état final de l'automate est l'état 2. On peut modifier
+  la contidition du while dans la fonction \texttt{simule\_automate}
+  pour sortir de la simulation lorsqu'on arrive à un état final. Voilà
+  une façon de faire :
+
+  \lstset{style=customc}
+  \lstinputlisting{listing/Cafe2/extrait2.c}
+  \vspace{0.2cm}
+
+  On se souvient que le tableau \texttt{A->etat\_finals} contient une
+  case pour chaque état. Si l'état 2 est final, alors la case 2 du
+  tableau contient 1. Sinon, elle contient 0. Comme vous le savez, en
+  C, 0 est évalué comme FAUX et 1 comme VRAI. Donc
+  \texttt{A->etat\_finals[i]} est VRAI si l'état \texttt{i} est final,
+  et FAUX sinon. Dans la fonction, on simule tant que l'état courant
+  n'est pas un état final. Donc tant que
+  \texttt{A->etat\_finals[etat\_courant]} est FAUX.
+
+\end{enumerate}
+\end{document}

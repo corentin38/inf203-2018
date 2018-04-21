@@ -1,0 +1,43 @@
+4
+0
+20
+0 1 2
+0 2 1
+0 c 0
+0 t 0
+0 r 0
+1 1 3
+1 2 3
+1 c 1
+1 t 1
+1 r 0
+2 1 1
+2 2 3
+2 c 2
+2 t 2
+2 r 0
+3 1 3
+3 2 3
+3 c 0
+3 t 0
+3 r 0
+19
+0 1 credit:10c
+0 2 credit:20c
+0 c pas-assez-de-pognon-credit:0c
+0 t pas-assez-de-pognon-credit:0c
+1 1 credit:30c
+1 2 CLING!-credit:30c
+1 c pas-assez-de-pognon-credit:20c
+1 t pas-assez-de-pognon-credit:20c
+1 r CLING!
+2 1 credit:20c
+2 2 credit:30c
+2 c pas-assez-de-pognon-credit:10c
+2 t pas-assez-de-pognon-credit:10c
+2 r CLING!
+3 1 CLING!-credit:30c
+3 2 CLING!-credit:30c
+3 c Boisson_servie
+3 t Boisson_servie
+3 r CLING!
