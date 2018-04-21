@@ -9,6 +9,12 @@
 \usepackage{fancyvrb}
 \usepackage{calc}
 
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,positioning}
+\usepackage{epigraph}
+\usepackage{eurosym}
+
 \setlength{\textwidth}{17cm}
 \setlength{\oddsidemargin}{-1cm}
 \setlength{\evensidemargin}{-1cm}
@@ -156,10 +162,10 @@
         clang automate.o main.o -o automate
 
     automate.o: automate.c automate.h
-	    clang -c automate.c
+            clang -c automate.c
 
     main.o: main.c automate.h
-	    clang -c main.c
+            clang -c main.c
   \end{lstlisting}
   \vspace{0.2cm}
 
@@ -227,7 +233,7 @@
   main la ligne :
 
 \begin{lstlisting}
-	printf ("taille automate : %d\n", sizeof(automate));
+        printf ("taille automate : %d\n", sizeof(automate));
 \end{lstlisting}
   \vspace{0.2cm}
 
@@ -264,13 +270,34 @@
 \item Voilà un nouvel automate pour notre machine à café 2.0.
 
   \begin{center}
-    Oulala ! Le beau schéma !
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.8cm, semithick]
+      \tikzstyle{every state}=[draw=black,text=black]
+
+      \node[initial,state,initial where=left]  (A)                    {$q_0$};
+      \node[state]                             (B) [above right of=A] {20c  };
+      \node[state]                             (C) [below right of=A] {10c  };
+      \node[state]                             (D) [above right of=C] {30c  };
+
+      \path (A) edge [bend left]  node {2}     (B)
+                edge [loop above] node {c,t,r} (A)
+                edge [bend right] node {c,t,r} (C)
+            (B) edge [bend left]  node {r}     (A)
+                edge [bend left]  node {1,2}   (D)
+                edge [loop above] node {c,t}   (B)
+            (C) edge [bend right] node {r}     (A)
+                edge [pos=0.4]    node {1}     (B)
+                edge [loop below] node {c,t}   (C)
+                edge [bend right] node {2}     (D)
+            (D) edge [pos=0.25]   node {c,t,r} (A)
+                edge [loop right] node {1,2}   (D);
+    \end{tikzpicture}
   \end{center}
 
-  On remarque qu'il faut deux états intermédiaires supplémentaires
-  pour gérer les pièces de 10 et 20 centimes. Sinon, l'automate
-  ressemble fortement à la version précédente.
-  \vspace{0.2cm}
+  On a omis les message de sortie sur le schéma pour ne pas le rendre
+  illisible. On remarque qu'il faut deux états intermédiaires
+  supplémentaires pour gérer les pièces de 10 et 20 centimes. Sinon,
+  l'automate ressemble fortement à la version précédente.
+  \newpage
 
   Voilà son fichier auto pour simuler l'automate avec notre
   programme~:
