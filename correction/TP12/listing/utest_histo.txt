@@ -1,0 +1,7 @@
+pwd
+date
+while [ $i -lt 5 ]
+do
+	echo "    boucle item $i"
+	i=$(expr $i + 1)
+done

@@ -1,0 +1,308 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\makeatletter
+\lst@InstallKeywords k{attributes}{attributestyle}\slshape{attributestyle}{}ld
+\makeatother
+
+\definecolor{mygreen}{rgb}{0,0.3,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.9,0,0.4}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{transitionc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  moreattributes={Q1, Q2, Q3, Q4},
+  attributestyle = \bfseries\color{mymauve},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP12}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\begin{center}
+  {\large {\bf Développement d'un interpréteur de commandes (2/2)}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item Ce n'est vraiment pas la peine de faire plus de scripts de test
+  que ce qui est déjà fourni.
+
+\item On est en train de chercher où est appelé la fonction
+  \texttt{decode\_entree}. On pense immédiatement à la commande
+  \texttt{grep} que nous avons vue au début du semestre. On se place
+  donc à la racine de notre projet et on tape :
+
+\begin{verbatim}
+    $ grep -Rn decode_entree
+    listing/commandes.c:81:int decode_entree(char *mot) {
+    listing/commandes.c:162:    entree = decode_entree(bout_de_ligne);
+\end{verbatim}
+
+  Grep nous renvoie donc, en couleur s'il vous plait, les deux endroit
+  où il a trouver le nom de la fonction. Ligne 81 du fichier
+  commandes.c, c'est la déclaration et ligne 162, c'est le seul appel
+  pour l'instant dans le projet.
+
+  \vspace{0.2cm}
+  Voilà une implémentation possible de cette fonction :
+
+  \lstinputlisting{listing/extrait1.c}
+
+\item La difficulté de l'implémentation des fonctions manquantes de
+  \texttt{commandes.c} est que vous n'êtes guidés qu'avec partimonie
+  sur les endroits à compléter. Il faut donc bien comprendre
+  l'objectif du programme pour savoir où l'on va.
+
+  \vspace{0.2cm}
+  Trois choses à compléter, donc. La fonction \texttt{decode\_entree}
+  a été vue à la question précédente.
+
+  \vspace{0.2cm}
+  La fonction
+  \texttt{init\_automate\_commandes} consiste à remplir la table de
+  transition de l'automate pour le faire correspondre à l'automate de
+  gestion du if vu en TD. Ensuite, il faut également remplir la table
+  de sortie pour savoir dans quels cas la ligne courante doit être
+  exécutée. Enfin, il faut paramétrer l'état courant de l'automate à
+  l'état initial. Cette façon de faire est un peu différente de celle
+  dont on a l'habitude : l'état courant est à présent stocké
+  directement dans la structure de l'automate.
+
+
+  \vspace{0.2cm}
+  Enfin, il faut compléter une partie de la fonction
+  \texttt{analyse\_commande\_interne}. C'est à cet endroit que l'on va
+  insérer l'algorithme usuel pour faire marcher l'automate, c'est à
+  dire :
+  \begin{itemize}
+  \item Récupérer l'entrée
+  \item Calculer l'état suivant en fonction de l'état courant et de
+    l'entrée
+  \item Calculer la sortie de la même manière
+  \item Mettre à jour l'état courant avec l'état suivant
+  \end{itemize}
+
+  \vspace{0.2cm}
+  Voilà une implémentation possible des deux dernières fonctions.
+
+  \lstinputlisting{listing/extrait2.c}
+
+\item On note que seules deux fonctions de \texttt{commandes.c} ont
+  leur prototype déclaré dans \texttt{commandes.h}. C'est parce que
+  les autres fonctions ne sont utilisées que dans
+  \texttt{commandes.c}. Pas la peine de les exposer au monde
+  entier. On a donc deux fonctions dont ont cherche les endroits où
+  elles sont appelées dans le code. Pour ça, comme pour la première
+  question, rien de tel qu'un bon petit grep !
+
+  \vspace{0.2cm}
+  \begin{itemize}
+  \item \texttt{analyse\_commande\_interne} est appelée dans
+    \texttt{interpreteur.c}, ligne 54.
+  \item \texttt{init\_automate\_commandes} est appelée dans
+    \texttt{interpreteur.c}, ligne 98.
+  \end{itemize}
+  \newpage
+
+\item Une fois testé notre interpréteur, à présent avec quelques
+  scripts contenant des if/then/else, on passe à la suite, c'est à
+  dire à l'historique.
+
+  \vspace{0.2cm}
+  Comme nous avons expliqué tout le principe de l'historique en TD et
+  que le schéma récapitulatif dans le sujet de TP est bien fait, voici
+  sans plus attendre une implémentation possible pour
+  \texttt{lignes.c}.
+
+  \vspace{0.2cm}
+  Dans \texttt{lignes.h}, on rajoute :
+
+  \lstinputlisting{listing/extrait3.c}
+
+  \vspace{0.2cm}
+  Dans \texttt{lignes.c}, on rajoute :
+
+  \lstinputlisting{listing/extrait4.c}
+
+  On voit que le mécanisme de l'historique, qui n'est pas si facile à
+  comprendre, se plie en fait en quelques fonctions assez courtes.
+
+  \vspace{0.2cm}
+  Reste à aborder le problème \textbf{PRINCIPAL} de cette
+  question. Les fonctions sont maintenant faites. Fastoche. Et en
+  plus, ça compile ! Trop easy ! Mais comment faire pour tester ? En
+  effet, nous venons d'implémenter l'historique alors que nous n'avons
+  pas encore intégrer la gestion du while dans notre
+  interpréteur. Comment donc vérifier que nos fonctions sont justes
+  alors qu'elles ne sont pour l'instant appellées nulle part dans le
+  programme ? Eh bien, pas de miracle, il faut faire des tests
+  unitaires, c'est à dire un main spécial dont le but est uniquement
+  d'appeler nos fonctions dans tous les cas possibles.
+
+  \vspace{0.2cm}
+  On rajoute au \texttt{Makefile} les lignes suivantes :
+
+  \lstinputlisting{listing/extrait5}
+
+  \vspace{0.2cm}
+  Et on crée le fichier \texttt{test\_historique.c} avec le contenu
+  suivant :
+
+  \lstinputlisting{listing/test_historique.c}
+
+  On peut maintenant compiler avec la commande \texttt{make test} et
+  exécuter \texttt{test} pour vérifier que l'historique marche
+  bien. Et tout ça dans la bonne humeur car on n'oublie pas que :
+
+  \begin{center}
+    {\large {\bf TESTER N'EST JAMAIS DU TEMPS PERDU}}
+  \end{center}
+  \newpage
+
+\item Voilà le schéma de l'automate pour le while, qu'il faudra
+  incorporer dans l'automate principal de notre interpréteur.
+
+  \begin{center}
+    ça arrive !
+  \end{center}
+
+\item L'implémentation du while est donc une sorte de courronnement de
+  votre année. Commençons par prêter un oeil à tout ce qu'il n'y a PAS
+  besoin de faire.
+
+  \begin{itemize}
+  \item Les constantes ATTENTE\_DO\_VRAI, ATTENTE\_DO\_FAUX, DANS\_DO,
+    ATTENTE\_DONE sont déjà présentes pour représenter les états de
+    l'automate du while.
+  \item Les constantes WHILE, DO, DONE, WHILE\_VRAI, WHILE\_FAUX sont
+    déjà présentes pour représenter les entrées de l'automate. On fait
+    attention : comme pour le IF, l'entrée WHILE est temporaire, elle
+    doit être "résolue" en WHILE\_VRAI ou WHILE\_FAUX selon la condition
+    qui suit.
+  \item Le tableau des mnémoniques contient déjà les correspondances
+    pour le while. La fonction \texttt{decode\_entree} n'a donc pas
+    besoin d'être modifiée.
+  \item \texttt{selectionne\_alternative} et
+    \texttt{extrait\_premier\_mot} n'ont pas besoin d'être modifiées,
+    on n'y touchera pas du TP.
+
+  \end{itemize}
+
+  Voilà le boulot à effectuer :
+
+  \begin{itemize}
+  \item Incorporer les transitions de l'automate du while dans notre
+    automate qui ne gère pour l'instant que le if. Cela consiste donc
+    à modifier la fonction \texttt{init\_automate}.
+  \item Modifier \texttt{analyse\_commande\_interne} pour effectuer la
+    "résolution" du mnémonique while en WHILE\_VRAI ou
+    WHILE\_FAUX. Juste en dessous du if qui appelle
+    \texttt{selectionne\_alternative}.
+  \item Appeler la fonction \texttt{obtenir\_numero\_ligne} losrque
+    l'on détecte un while, qu'il soit vrai ou faux, pour connaître son
+    numéro de ligne. Puis, enregistrer ce numéro de ligne dans
+    l'automate, au registre \texttt{A->ligne\_boucle}.
+  \item Appeler la fonction \texttt{aller\_a\_la\_ligne} lorsque la
+    sortie de l'automate est BOUCLE, afin de revenir à la ligne du
+    while, qu'on ira chercher dans l'automate, puisqu'on l'a
+    enregistrée précédemment.
+  \item Ne pas oublier d'initialiser l'historique avec le descripteur
+    de fichier correspondant au script dans \texttt{interpreteur.c}, à
+    l'aide de la fonction \texttt{init\_historique}.
+  \end{itemize}
+
+  En un mot comme en cent, voilà les nouvelles implémentations pour
+  \texttt{init\_automate\_commandes}.
+
+  \lstinputlisting{listing/extrait6.c}
+
+  \vspace{0.2cm}
+  Et la fonction \texttt{analyse\_commande\_interne}.
+
+  \lstinputlisting{listing/extrait7.c}
+
+\end{enumerate}
+
+\end{document}

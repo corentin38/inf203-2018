@@ -1,0 +1,5 @@
+test: lignes.o test_historique.o
+	clang $^ -o $@
+
+test_historique.o: test_historique.c lignes.h
+	clang -Wall -Werror -g -DDEBUG -c $^
