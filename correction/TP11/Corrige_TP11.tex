@@ -1,0 +1,392 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphics}
+\usepackage{dirtree}
+\usepackage{paracol}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{calc}
+
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textheight}{26cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3ex}
+
+\input{preambule.tex}
+
+\begin{document}
+\thispagestyle{empty}
+
+\makeatletter
+\lst@InstallKeywords k{attributes}{attributestyle}\slshape{attributestyle}{}ld
+\makeatother
+
+\definecolor{mygreen}{rgb}{0,0.3,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.9,0,0.4}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{transitionc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  moreattributes={Q1, Q2, Q3, Q4},
+  attributestyle = \bfseries\color{mymauve},
+}
+
+\lstdefinestyle{none}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=bash,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+\lstset{tabsize=3, style=customc,literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\EnteteUE
+
+\begin{center}
+  {\large {\bf Corrigé TP11}}
+\end{center}
+
+\vspace*{0.5cm}
+
+\begin{center}
+  {\large {\bf Développement d'un interpréteur de commandes (1/2)}}
+\end{center}
+
+\vspace*{0.5cm}
+
+Ce TP est sans doute le plus difficile de l'année et celui qui fera
+appel au champ le plus large de vos connaissances. Il est aussi le plus
+intéressant et le plus complet :
+
+\begin{itemize}
+\item Il nécessite de lire et de comprendre du code déjà écrit
+\item Il nécessite d'utiliser des fonctions sans s'attarder sur leur
+  implémentation.
+\item Il vous demande de vous concentrer durant deux séances sur le
+  même projet. Ce n'est donc pas un projet jetable, ``code and
+  forget'' comme tous les TPs précédents.
+\end{itemize}
+
+Il n'existe pas de méthode absolue pour découvrir et comprendre,
+\textit{explorer} une base de code existante. Vous allez ainsi
+rencontrer des problèmes de la vie réelle :
+
+\begin{itemize}
+\item Trouver où, mais \textbf{OÙ} cette punaise de fonction est déclarée
+\item Comprendre les noms obscurs des variables et leur signification
+\item Voir que l'indentation aide \textbf{VRAIMENT} à lire du code
+\item Voir qu'un Makefile est \textbf{INDISPENSABLE} lorsqu'on aborde un projet
+  que l'on ne connait pas
+\item etc.
+\end{itemize}
+
+Tout cela fait partie du boulot d'un informaticien. N'oubliez pas qu'un
+développeur passe plus de temps à lire et explorer du code existant
+qu'à en écrire. Et à ce petit jeu, le gagnant et souvent celui qui a
+les meilleurs outils (et qui sait s'en servir).
+
+\begin{enumerate}[label=\textbf{[\alph*]}]
+  \setlength\itemsep{1em}
+
+\item On jette un oeil aux fichier \texttt{lignes.c} et
+  \texttt{variables.c} et on découvre avec gravité que toutes les
+  fonctions sont vides. Il va falloir les compléter ...
+
+\item Une implémentation possible, dans le fichier \texttt{lignes.c},
+  de la fonction \texttt{lire\_ligne\_fichier} :
+
+  \lstinputlisting{listing/extrait1.c}
+
+\item Après avoir complété \texttt{lire\_ligne\_fichier}, on compile
+  en utilisant \texttt{make}, puis on teste notre interpreteur sur le
+  fichier de commande \texttt{test\_1\_lecture\_ligne.sh}.
+  \vspace{0.2cm}
+
+  On voit que l'interpreteur s'exécute bien sur chacune des lignes,
+  mais qu'il n'exécute que la commande de base, sans prendre en compte
+  les paramètres.
+  \vspace{0.2cm}
+  \newpage
+
+\item Voici une implémentation possible pour les fonctions de
+  \texttt{variables\_base.h} :
+
+  \lstinputlisting{listing/extrait2.c}
+
+  \textbf{NB:} On note plusieurs choses :
+  \begin{itemize}
+  \item On initialise juste en plaçant \texttt{ens->nb} à 0. Comme ça,
+    le programme saura que ce n'est pas la peine d'aller consulter le
+    tableau, puisqu'il n'y a pas de variable enregistrée. Pas la peine
+    d'initialiser chaque valeur du tableau à NULL.
+  \item Dans \texttt{ajouter\_variable}, on n'oublie pas de vérifier
+    qu'on a pas atteint le nombre maximum de variables possible avant
+    d'en insérer une nouvelle.
+  \item Dans \texttt{nom\_variable}, on vérifie quand même que
+    l'indice donné est cohérent, c'est à dire positif ou nul, et
+    inférieur au nombre maximum de variables possibles.
+  \item Dans \texttt{valeur\_variable}, voyez comme on initialise la
+    valeur à retourner : \texttt{char *valeur = const\_empty;}
+
+    On a déclaré la chaîne vide ("") comme une variable globale, donc
+    à l'extérieur de toute fonction pour être sûr que cette allocation
+    de mémoire (1 octet, avec '$\backslash$0' dedans) ne soit pas détruite en
+    sortant de la fonction.
+  \end{itemize}
+
+\item On attaque maintenant la fonction
+  \texttt{trouver\_et\_appliquer\_affectation\_variable}. L'algorithme à
+  suivre pour implémenter cette fonction est bien décrit par une
+  superbe animation dans le TD que nous avons fait. Pour rappel,
+  l'objectif est de chercher dans la ligne une déclaration de
+  variables, comme : \texttt{mavariable=42} avec potentiellement des
+  espaces avant, mais pas après. Ensuite, une fois l'affectation
+  reconnue, il faut enregistrer la variable dans la table en appelant
+  les fonctions que nous avons déjà codées. Voilà tout de suite une
+  implémentation possible, à la mode des automates avec plein de switch.
+
+  \lstinputlisting{listing/extrait3.c}
+
+  \vspace{0.2cm}
+  \textbf{NB:} ici aussi, plusieurs choses à noter :
+  \begin{itemize}
+  \item L'utilisation d'une enum pour noter tous les états possibles
+    au lieu des \texttt{\#define} que vous connaissez. Une enum est un
+    peu comme une déclaration automatique de constantes
+    numérotées.
+
+    \begin{lstlisting}
+      enum { ESP_DEB, NOM, EGAL, VAL, ERR } etat;
+    \end{lstlisting}
+
+    \texttt{etat} est une variable de type enum, qui peut
+    prendre les valeurs \texttt{ESP\_DEB}, \texttt{NOM},
+    \texttt{EGAL}, \texttt{VAL} ou \texttt{ERR}. En fait, en
+    pratique, ces constantes sont des entiers, à partir de 0. Donc
+    \texttt{ESP\_DEB} = 0, \texttt{NOM} = 1, etc.. On peut donc
+    utiliser la variable \texttt{etat} dans un switch.
+  \item On a découvert une affectation de variable valide si on
+    arrive au bout de la ligne est qu'on est dans l'état
+    \texttt{VAL}.
+  \item On arrête le parcours dans le cas où on détecte une syntaxe
+    invalide d'affectation, c'est à dire lorsqu'on entre dans l'état
+    \texttt{ERR}.
+  \item Notez comme les caractères (qui ne sont que des nombres
+    représentant un caractère selon la table ASCII) se prêtent bien
+    aux switch ...
+  \end{itemize}
+
+  \textbf{NB2: } Il faut également voir les limitations de
+  l'implémentation proposée.
+  \begin{itemize}
+  \item Elle ne prend pas en compte les guillemets (ce n'était pas
+    dans la consigne, mais il n'est pas interdit de faire plus que ce
+    qui est demandé !)
+  \item Elle ne prend en compte que les espaces comme séparateurs. Les
+    tabulations (caractère \texttt{$\backslash$n}) la font donc
+    planter
+  \item Elle est assez longue (60 lignes). C'est peut être le symptôme
+    que l'on essaye de faire trop de choses en même temps.
+  \end{itemize}
+
+\item Voilà la seconde fonction compliquée du TP, vue également en
+  TD. \texttt{appliquer\_expansion\_variables} doit remplacer toutes
+  les utilisations de variable dans la chaîne (\texttt{\$mavariable}
+  séparé avant et après par des espaces) par leur valeur réelle ou une
+  chaîne vide si la variable appelée n'existe pas. Voilà une
+  implémentation toujours à la mode des automates, avec des switch.
+
+  \lstinputlisting{listing/extrait4.c}
+
+  \vspace{0.2cm}
+  \textbf{NB: } Encore des notes pour cette fonction.
+  \begin{itemize}
+  \item \texttt{i\_o}, \texttt{i\_e} et \texttt{i\_n} sont
+    respectivement les indices du caractère courant pour les chaînes
+    \texttt{ligne\_originale}, \texttt{ligne\_expansee} et
+    \texttt{nom}.
+  \item Cette fois ci, on utilise la fonction \texttt{isalnum} qu'on
+    trouve dans le header \texttt{ctype.h} pour déterminer si le
+    caractère courant est alpha numérique, ou autre chose.
+  \item On note aussi que l'on peut continuer le parcours de la
+    chaîne de caractère un cran après le caractère '$\backslash$0'
+    dans le cas où l'on est encore dans l'état expansion lorsqu'on
+    l'aborde. Ce hack horrible a le mérite de nous faire remarquer
+    qu'un break ne termine que l'expression immédiatement englobante,
+    dans ce cas le switch. Le while qui englobe le switch devient par
+    conséquent impossible à interrompre sans sortir préalablement du
+    switch.
+  \end{itemize}
+
+  \vspace{0.2cm}
+  Comme de nombreux étudiants, plutôt que de s'adonner aux plaisirs de
+  l'imbrication de switch, ont sûrement choisi d'implémenter cette
+  fonction avec des if en cascade, voilà une implémentation à cette
+  sauce. On remarquera que pour ne pas s'y perdre, on a créer une
+  fonction intermédiaire \texttt{expand}.
+
+  \lstinputlisting{listing/extrait5.c}
+
+  \vspace{0.2cm}
+  Une dernière chose ... Les fonctions de gestion des variables sont
+  véritablement complexes et difficiles à coder. Comme nous ne sommes
+  pas des génies, nous ne pouvons pas y arriver du premier coup. Il
+  est presque obligatoire de procéder par essais/erreurs. Pour cela,
+  le plus facile est de se faire des tests unitaires afin de se
+  concentrer sur LA fonction que l'on est en train de coder et de
+  s'assurer qu'elle rempli bien son rôle dans tous les cas possibles.
+
+  \vspace{0.2cm}
+  Voilà un main permettant de tester les fonctions de
+  \texttt{variables.c}.
+
+  \lstinputlisting{listing/src/main_unit_test.c}
+
+  \vspace{0.2cm}
+  Ces tests dépassent le cadre de ce TP, mais vous pouvez observer,
+  dans le \texttt{main} combien il est facile de rajouter des cas de
+  test pour vérifier que nos fonctions produisent bien le résultat
+  escompté même dans les situations les plus tordues ... Ce programme
+  produit la sortie suivante lorsque les fonctions de
+  \texttt{variables.c} sont implémentées correctement :
+
+\begin{verbatim}
+corentin@gazelle:src $ ./main_unit_test
+TOTO=5
+TITI=12
+TATA=Chantons gaiement !
+
+
+[ OK ] test case <TOTO=5> OK
+[ OK ] test case <     TOTO=5> OK
+
+[ OK ] test case <     TOTO =5> OK
+[ OK ] test case <     TOTO= 5> OK
+[ OK ] test case <     TOTO=5 > OK
+
+[ OK ] test case <$TOTO> OK
+[ OK ] test case <aeofubaoeu $TOTO aeufbaeub> OK
+[ OK ] test case <aeofubaoeu $TOTO> OK
+[ OK ] test case <aeofubaoeu $ aefae> OK
+
+Testing with : argc=5 argv=[/bin/monprog, argument1, argument2, argument3, argument4]
+[ OK ] $# = <4>
+[ OK ] $* = </bin/monprog argument1 argument2 argument3 argument4>
+[ OK ] $0 = </bin/monprog>
+[ OK ] $1 = <argument1>
+[ OK ] $2 = <argument2>
+[ OK ] $3 = <argument3>
+[ OK ] $4 = <argument4>
+$
+\end{verbatim}
+
+\item Après les fonctions sur les variables, la fonction
+  \texttt{decouper\_ligne} paraît être une promenade de santée. Elle a
+  été également largement décrite en TD, place à une implémentation
+  possible.
+
+  \lstinputlisting{listing/extrait6.c}
+
+  \vspace{0.2cm}
+
+\item Nous passons aux variables automatiques. Toute cette partie du
+  TP est ``complémentaire'', c'est à dire facultative. Elle donne un
+  exemple de l'utilisation de la fonction \texttt{strcat}.
+
+  \vspace{0.2cm}
+  On rappelle que toutes les variables en Shell sont des chaînes de
+  caractères. Même les nombres sont donc stockés sous cette forme et
+  ne sont interprétés comme nombre que lorsqu'on les donne à des
+  fonctions comme \texttt{test}, qui s'occupe alors de faire la
+  conversion.
+
+  \vspace{0.2cm}
+  \texttt{\$\#} représente le nombre de paramètres passé à la
+  commande. Dans notre cas, cela correspondra donc à
+  \texttt{argc - 1}, vu que le Shell ne compte pas le nom du programme
+  comme un paramètre.
+
+  \vspace{0.2cm}
+  Voilà donc une implémentation de la fonction
+  \texttt{affecter\_variables\_automatiques}.
+
+  \lstinputlisting{listing/extrait7.c}
+
+
+
+%
+%  \vspace{0.2cm}
+%
+%  \lstinputlisting{listing/Digicode_V1/automate.c}
+%
+%
+%  \begin{center}
+%    \begin{tabular}{|l|c|c|c|c|c|}
+%      \hline
+%      & 1 & 2 & 3 & 4 & 0, 5, 6, 7, 8, 9 \\
+%      \hline
+%      \textbf{Q0} & Q1 & Q0 & Q0 & Q0 & Q0 \\
+%      \textbf{Q1} & Q1 & Q2 & Q0 & Q0 & Q0 \\
+%      \textbf{Q2} & Q1 & Q0 & Q3 & Q0 & Q0 \\
+%      \textbf{Q3} & Q1 & Q0 & Q0 & Q4 & Q0 \\
+%      \textbf{Q4} & Q1 & Q0 & Q0 & Q0 & Q0 \\
+%      \hline
+%    \end{tabular}
+%  \end{center}
+%
+%  \lstset{style=transitionc}
+%  \lstinputlisting{listing/Digicode_V3/automate.c}
+%
+
+\end{enumerate}
+
+\end{document}
