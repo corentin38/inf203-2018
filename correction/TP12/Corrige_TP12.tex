@@ -8,6 +8,9 @@
 \usepackage{xcolor}
 \usepackage{fancyvrb}
 \usepackage{calc}
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{shapes,shapes.geometric,fit,calc,arrows,automata,positioning}
 
 \setlength{\textwidth}{17cm}
 \setlength{\oddsidemargin}{-1cm}
@@ -244,9 +247,30 @@
 \item Voilà le schéma de l'automate pour le while, qu'il faudra
   incorporer dans l'automate principal de notre interpréteur.
 
-  \begin{center}
-    ça arrive !
-  \end{center}
+
+\begin{center}
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.8cm, semithick, transform shape]
+    \tikzstyle{every state}=[draw=black,text=black]
+    \tikzset{elliptic state/.style={draw,ellipse}}
+%    \tikzset{every node/.style={scale=.5}}
+
+    \node[elliptic state] (A)                    {NORM};
+    \node[elliptic state] (B) [below right of=A] {ATT\_DO};
+    \node[elliptic state] (C) [right of=A]       {DANS\_DO};
+    \node[elliptic state] (D) [below left of=A]  {ATT\_DO\_FAUX};
+    \node[elliptic state] (E) [left of=A]        {ATT\_DONE};
+
+    \path (A) edge              node [pos=0.3,right] {while\_vrai / non} (B)
+              edge [loop above] node {instruction / oui} (A)
+              edge              node [pos=0.7,right] {while\_faux / non} (D)
+          (B) edge              node [pos=0.3,right] {do / oui}          (C)
+          (C) edge [loop above] node {instruction / oui} (C)
+              edge              node [above] {done / non}        (A)
+          (D) edge              node [pos=0.3,left] {do / non}          (E)
+          (E) edge              node {done / non}        (A)
+              edge [loop above] node {instruction / non} (E);
+  \end{tikzpicture}
+\end{center}
 
 \item L'implémentation du while est donc une sorte de courronnement de
   votre année. Commençons par prêter un oeil à tout ce qu'il n'y a PAS
